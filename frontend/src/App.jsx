@@ -1,14 +1,25 @@
 import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import InternalNumbers from './pages/InternalNumbers';
+import Anket from './pages/Anket';
+import AnketPage from './pages/AnketPage';
 
 
-const App = () => {
+function App() {
   return (
-    <div>
-      <HomePage />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/internal-numbers" element={<InternalNumbers />} />
+        <Route path="/anket" element={<Anket />} />
+        <Route path="/anketPage/:id" element={<AnketPage />} />
+
+
+       
+      </Routes>
+    </Router>
   );
-};
+}
 
 export default App;

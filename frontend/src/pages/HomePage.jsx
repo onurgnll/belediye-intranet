@@ -1,169 +1,242 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
+import Sidebar from '../components/Sidebar'; 
 import backgroundImage from '../assets/images/belediye.jpg'; 
 import './HomePage.css';
-import icon1 from '../assets/icons/business.png'; 
-import icon2 from '../assets/icons/calendar.png'; 
-import icon3 from '../assets/icons/clipboard.png'; 
-import icon4 from '../assets/icons/landline.png'; 
-import icon5 from '../assets/icons/home-page.png';
-import icon6 from '../assets/icons/testing.png';
+import duyuru from '../assets/icons/duyuru.png';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Card, CardMedia, CardContent, Typography } from '@mui/material';
+import { CSSTransition } from 'react-transition-group';
+import './HomePageAnimations.css'; 
+import ataturkImage from '../assets/images/m.png'
 
-const HomePage = () => {
-  const [activeAnnouncement, setActiveAnnouncement] = useState(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(true);
+const HomePage = () => { 
+  const [announcements, setAnnouncements] = useState([]);
+  const [mainAnnouncement, setMainAnnouncement] = useState(null);
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
+  const [isMainAnnouncementDialogOpen, setIsMainAnnouncementDialogOpen] = useState(false);
+  const [isSurveyDialogOpen, setIsSurveyDialogOpen] = useState(false);
+  const [surveyUrl, setSurveyUrl] = useState('');
+  const [surveyTitle, setSurveyTitle] = useState('');
+  const [hasMainAnnouncementBeenClosed, setHasMainAnnouncementBeenClosed] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  const announcements = [
-    {
-      id: 1,
-      image: 'https://atakum.bel.tr/img/327324821.JPG',
-      title: 'Duyuru 1',
-      description: 'duyuru içeriğii',
-    },
-    {
-      id: 2,
-      image: 'https://atakum.bel.tr/img/327324821.JPG',
-      title: 'Duyuru 2',
-      description: 'duyuru içeriğii',
-    },
-    {
-      id: 3,
-      image: 'https://atakum.bel.tr/img/327324821.JPG',
-      title: 'Duyuru 3',
-      description: 'duyuru içeriğii',
-    },
-    {
-      id: 4,
-      image: 'https://atakum.bel.tr/img/327324821.JPG',
-      title: 'Duyuru 4',
-      description: 'duyuru içeriğii',
-    },
-    {
-      id: 5,
-      image: 'https://atakum.bel.tr/img/272047914.JPG',
-      title: 'Duyuru 1',
-      description: 'duyuru içeriğii',
-    },
-    {
-      id: 6,
-      image: 'https://atakum.bel.tr/img/272047914.JPG',
-      title: 'Duyuru 2',
-      description: 'duyuru içeriğii',
-    },
-    {
-      id: 7,
-      image: 'https://atakum.bel.tr/img/272047914.JPG',
-      title: 'Duyuru 3',
-      description: 'duyuru içeriğii',
-    },
-    {
-      id: 8,
-      image: 'https://atakum.bel.tr/img/272047914.JPG',
-      title: 'Duyuru 4',
-      description: 'duyuru içeriğii',
-    },
-    {
-      id: 10,
-      image: 'https://atakum.bel.tr/img/327324821.JPG',
-      title: 'Duyuru 1',
-      description: 'duyuru içeriğii',
-    },
-    {
-      id: 11,
-      image: 'https://atakum.bel.tr/img/327324821.JPG',
-      title: 'Duyuru 2',
-      description: 'duyuru içeriğii',
-    },
-    {
-      id: 13,
-      image: 'https://atakum.bel.tr/img/327324821.JPG',
-      title: 'Duyuru 3',
-      description: 'duyuru içeriğii',
-    },
-    {
-      id: 12,
-      image: 'https://atakum.bel.tr/img/327324821.JPG',
-      title: 'Duyuru 4',
-      description: 'duyuru içeriğii',
-    },
-    // Add more announcements here...
-  ];
-
-
-  const handleClick = (id) => {
-    setActiveAnnouncement(activeAnnouncement === id ? null : id);
+  const fetchMainAnnouncement = () => {
+    const ApiEndpoint = `${import.meta.env.VITE_APP_API_URL}`;
+    
+    fetch(ApiEndpoint + '/user/get-main-duyuru', {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data && data.data && data.data.duyuru) {
+          setMainAnnouncement(data.data.duyuru);
+          setSelectedAnnouncement(data.data.duyuru);
+          setIsMainAnnouncementDialogOpen(true);
+        } else {
+          console.error('Main announcement data is missing');
+        }
+      })
+      .catch((error) => console.error('Error fetching main announcement:', error));
   };
 
-  const redirectToSurvey = () => {
-    window.location.href = 'https://example.com/anket';
+  const fetchSurvey = () => {
+    const ApiEndpoint = `${import.meta.env.VITE_APP_API_URL}`;
+    
+    fetch(ApiEndpoint + '/user/get-main-anket', {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data && data.data && data.data.anket) {
+          setSurveyUrl('/anket'); 
+          setSurveyTitle(data.data.anket.title); 
+          if (isInitialLoad) {
+            setIsSurveyDialogOpen(true);
+          }
+        } else {
+          console.error('Survey data is missing');
+        }
+      })
+      .catch((error) => console.error('Error fetching survey:', error));
   };
 
-  const closeDialog = () => {
-    setIsDialogOpen(false);
+  useEffect(() => {
+    fetchMainAnnouncement();
+    
+    const ApiEndpoint = `${import.meta.env.VITE_APP_API_URL}`;
+      
+    fetch(ApiEndpoint + '/user/get-duyuru', {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const allAnnouncements = data.data.duyurular;
+        setAnnouncements(allAnnouncements.filter(announcement => announcement.isMain === 0 || announcement.isMain === 1));
+      })
+      .catch((error) => console.error('Error fetching announcements:', error));
+  }, []);
+
+  useEffect(() => {
+    if (!isMainAnnouncementDialogOpen && hasMainAnnouncementBeenClosed) {
+      fetchSurvey();
+      setIsInitialLoad(false);
+    }
+  }, [isMainAnnouncementDialogOpen, hasMainAnnouncementBeenClosed]);
+
+  const openDialog = (announcement) => {
+    setSelectedAnnouncement(announcement);
+    setIsMainAnnouncementDialogOpen(true);
   };
+
+  const closeMainAnnouncementDialog = () => {
+    setIsMainAnnouncementDialogOpen(false);
+    setHasMainAnnouncementBeenClosed(true);
+  };
+
+  const closeSurveyDialog = () => {
+    setIsSurveyDialogOpen(false);
+    setSurveyTitle('');
+    setSurveyUrl('');
+  };
+
+  const Endpoint = `${import.meta.env.VITE_APP_URL }`;
+
+  const getImageUrl = (filename) => filename ? `${Endpoint}/duyuru/${filename}` : duyuru;
 
   return (
     <div className="home-page" style={{ backgroundImage: `url(${backgroundImage})` }}>
       <Header />
-      <div className="sidebar">
-        <button>
-          <img src={icon5} alt="Icon 5" />
-          <span>Anasayfa</span>
-        </button>
-        <button>
-          <img src={icon4} alt="Icon 4" />
-          <span>Dahili Numaralar</span>
-        </button>
-        <button>
-          <img src={icon1} alt="Icon 1" />
-          <span>Destek Talepleri</span>
-        </button>
-        <button>
-          <img src={icon3} alt="Icon 3" />
-          <span>Zimmet İzinler</span>
-        </button>
-        <button>
-          <img src={icon2} alt="Icon 2" />
-          <span>Doğum Günü</span>
-        </button>
-        <button>
-          <img src={icon6} alt="Icon 6" />
-          <span>Anketler</span>
-        </button>
-      </div>
+      <Sidebar />
       <div className="content">
         <div className="announcement-col">
-          {announcements.map((announcement) => (
-            <div
-              className={`announcement-box ${activeAnnouncement === announcement.id ? 'active' : ''}`}
-              key={announcement.id}
-              onClick={() => handleClick(announcement.id)}
+          {mainAnnouncement && !hasMainAnnouncementBeenClosed && (
+            <Card 
+              className="announcement-box" 
+              onClick={() => openDialog(mainAnnouncement)}
+              style={{ marginBottom: '20px', cursor: 'pointer' }}
             >
-              <img 
-                src={announcement.image} 
-                alt={announcement.title} 
-                className="announcement-image" 
+              <CardMedia
+                component="img"
+                height="140"
+                image={getImageUrl(mainAnnouncement.duyuruResimler[0]?.resim)}
+                alt={mainAnnouncement.title}
               />
-              <div className="announcement-content">
-                <h3>{announcement.title}</h3>
-                <p className="announcement-description">
-                  {announcement.description}
-                </p>
-              </div>
-            </div>
+              <CardContent>
+                <Typography 
+                  variant="h6" 
+                  component="div" 
+                  className="announcement-title"
+                >
+                  {mainAnnouncement.title}
+                </Typography>
+              </CardContent>
+            </Card>
+          )}
+          {announcements.map((announcement) => (
+            <Card 
+              className="announcement-box" 
+              key={announcement.id}
+              onClick={() => openDialog(announcement)}
+              style={{ marginBottom: '20px', cursor: 'pointer' }}
+            >
+              <CardMedia
+                component="img"
+                height="140"
+                image={getImageUrl(announcement.duyuruResimler[0]?.resim)}
+                alt={announcement.title}
+              />
+              <CardContent>
+                <Typography 
+                  variant="h6" 
+                  component="div" 
+                  className="announcement-title"
+                >
+                  {announcement.title}
+                </Typography>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>
-      
-      {isDialogOpen && (
-        <div className="dialog-overlay">
-          <div className="dialog-box">
-            <h2>Önemli Bilgilendirme</h2>
-            <p>Bu siteye giriş yaptınız. Lütfen zorunlu anketi doldurun.</p>
-            <button onClick={closeDialog}>Kapat</button>
-          </div>
+
+      {/* Main Announcement Dialog */}
+      <CSSTransition
+        in={isMainAnnouncementDialogOpen}
+        timeout={300}
+        classNames="dialog"
+        unmountOnExit
+      >
+        <Dialog 
+          open={isMainAnnouncementDialogOpen} 
+          onClose={closeMainAnnouncementDialog}
+          BackdropProps={{
+            onClick: closeMainAnnouncementDialog,
+          }}
+        >
+         <DialogTitle className="dialog-title">{selectedAnnouncement?.title}</DialogTitle>
+         <DialogContent className="dialog-content-text">
+           <img 
+             src={getImageUrl(selectedAnnouncement?.duyuruResimler[0]?.resim)} 
+             alt={selectedAnnouncement?.title} 
+             style={{ width: '100%', height: 'auto' }}
+           />
+           <Typography variant="body1" className="dialog-content-text">
+             {selectedAnnouncement?.content}
+           </Typography>
+         </DialogContent>
+         <DialogActions>
+           <Button onClick={closeMainAnnouncementDialog} color="primary">
+             Kapat
+           </Button>
+         </DialogActions>
+        </Dialog>
+      </CSSTransition>
+
+      {/* Survey Dialog */}
+      <CSSTransition
+        in={isSurveyDialogOpen && !isInitialLoad}
+        timeout={300}
+        classNames="dialog"
+        unmountOnExit
+      >
+        <Dialog 
+          open={isSurveyDialogOpen && !isInitialLoad} 
+          onClose={closeSurveyDialog}
+          BackdropProps={{
+            onClick: closeSurveyDialog,
+          }}
+        >
+          <DialogTitle className="dialog-title">Çözmeniz Gereken Anketler Var:</DialogTitle>
+          <DialogContent>
+            <Typography variant="h6" className="survey-title">{surveyTitle}</Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => window.location.href = surveyUrl} color="primary">
+              Çöz
+            </Button>
+            <Button onClick={closeSurveyDialog} color="secondary">
+              Kapat
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </CSSTransition>
+
+      {/* Atatürk Image */}
+      <div className="ataturk-container">
+        <img src={ataturkImage} alt="Atatürk" className="ataturk-image" />
+        <div className="ataturk-quote">
+          "Kendiniz için değil, bağlı bulunduğunuz ulus için elbirliği ile çalışınız. Çalışmaların en yükseği budur."
         </div>
-      )}
+      </div>
     </div>
   );
 };

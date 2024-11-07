@@ -1,3 +1,15 @@
+@font-face {
+  font-family: 'Agbalumo';
+  src: url('../assets/fonts/Agbalumo-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'DancingScript';
+  src: url('../assets/fonts/DancingScript-VariableFont_wght.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 .header {
   position: fixed;
   top: 0;
@@ -7,7 +19,7 @@
   background: rgba(255, 255, 255, 0.6);
   padding: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center; /* Center the title */
@@ -15,11 +27,11 @@
 
 .header-icon {
   position: absolute;
-  left: 30px; /* Move the icon to the right side */
+  left: 20px; /* Move the icon to the right side */
 }
 
 .logo-icon {
-  width: 50px;
+  width: 65px;
   border-radius: 5px;
   height: auto;
 }
@@ -29,14 +41,16 @@
 }
 
 .logo-icon2 {
-  width: 65px;
+  width: 50px;
   border-radius: 5px;
   height: auto;
 }
 
 .header h1 {
+  font-family: 'Agbalumo', sans-serif; /* Roboto fontunu kullanıyoruz */
+  font-size: 2.5rem;
+  font-weight: 700;
   margin: 0;
-  font-size: 24px;
 }
 
 .header nav {
