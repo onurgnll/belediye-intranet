@@ -7,5 +7,5 @@ EXPOSE 8000
 #RUN npx sequelize-cli db:migrate
 #RUN npx sequelize-cli db:seed:all
 #CMD [ "npm", "run", "prod" ]
-#CMD npx sequelize-cli db:migrate --env production; npm run prod
-CMD npx sequelize-cli db:drop;npx sequelize-cli db:create;npx sequelize-cli db:migrate --env production ; npx sequelize-cli db:seed:all; npm run prod
+CMD npx sequelize-cli db:migrate --env production; npm run prod
+#CMD npx sequelize-cli db:drop;npx sequelize-cli db:create;npx sequelize-cli db:migrate --env production ; npx sequelize-cli db:seed:all; npm run prod
