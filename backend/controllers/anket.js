@@ -31,11 +31,11 @@ const createAnket = async (req, res, next) => {
             isMain: main
         })
 
-        const question = await Question.create({
-            question_text: "Adınız Soyadınız",
-            question_type: "text_input",
-            surveyID: survey.id
-        })
+        // const question = await Question.create({
+        //     question_text: "Adınız Soyadınız",
+        //     question_type: "text_input",
+        //     surveyID: survey.id
+        // })
         for (const element of questions) {
 
             if (element.question_text == "") continue;
@@ -200,9 +200,9 @@ const replyAnket = async (req, res, next) => {
             if (element.text) {
                 const question = await Question.findOne({ where: { id: element.questionID } })
 
-                if (question.question_text != "Adınız Soyadınız") {
+                // if (question.question_text != "Adınız Soyadınız") {
 
-                    const answers = element.text.split(",")
+                    const answers = element.text.split(";")
                     console.log(answers);
                     for (const elementt of answers) {
 
@@ -212,13 +212,13 @@ const replyAnket = async (req, res, next) => {
                             answer_text: elementt
                         })
                     }
-                } else {
-                    await Answer.create({
-                        responseID: surveyResponse.id,
-                        questionID: element.questionID,
-                        answer_text: element.text
-                    })
-                }
+                // } else {
+                //     await Answer.create({
+                //         responseID: surveyResponse.id,
+                //         questionID: element.questionID,
+                //         answer_text: element.text
+                //     })
+                // }
 
             }
 

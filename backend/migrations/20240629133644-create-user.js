@@ -46,7 +46,7 @@ module.exports = {
         allowNull: false
       },
       accessToken: {
-        type: DataTypes.STRING(1000),
+        type: Sequelize.STRING(1000),
         allowNull: true
       }
     });

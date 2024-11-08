@@ -32,7 +32,7 @@ app.get('/get-ip', (req, res) => {
   console.log(ipAddress);
   res.json({ ip: ipAddress });
 });
-app.listen(PORT,process.env.IP,() => {
+app.listen(PORT,() => {
   console.log(`Server started on port ${PORT}`);
 });
 

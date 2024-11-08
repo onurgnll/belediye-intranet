@@ -3,7 +3,7 @@ WORKDIR /app
 COPY . .
 RUN npm install --production --legacy-peer-deps
 RUN npm install -g sequelize-cli
-EXPOSE 8000
+EXPOSE 5000
 #RUN npx sequelize-cli db:migrate
 #RUN npx sequelize-cli db:seed:all
 #CMD [ "npm", "run", "prod" ]

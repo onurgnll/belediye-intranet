@@ -116,7 +116,7 @@ const getHasBirthdayPersons = async (req, res, next) => {
         // Kullanıcıların doğum tarihlerini karşılaştırmak için bir BETWEEN sorgusu kullanabilirsiniz.
         const query = `
             SELECT * 
-            FROM Personel 
+            FROM personel 
             WHERE MONTH(DogumTarihi) = :month 
             AND DAY(DogumTarihi) = :day
         `;

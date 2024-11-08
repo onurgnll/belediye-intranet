@@ -100,7 +100,7 @@ function CreateAnket({ handleClose, open, getAnketler }) {
                     />
                     <div>
                         <h4>Sorular</h4>
-                        <span className='fs-6'>Adınız Soyadınız sorusu her ankette otomatik eklenir.</span>
+                        {/* <span className='fs-6'>Adınız Soyadınız sorusu her ankette otomatik eklenir.</span> */}
                         <hr />
                         <Button
                             variant='outlined'

@@ -59,7 +59,7 @@ function Cevaplar({ handleClose, open, id }) {
                         return (
                             <div className='d-flex flex-column' key={element.id}>
                                 <span className='fw-bold'>{element.Question.question_text}</span>
-                                <span>Verilen Cevap: {element.answer_text}</span>
+                                <span style={{color: "gray"}}>Verilen Cevap: {element.answer_text}</span>
                             </div>
                         )
                     })

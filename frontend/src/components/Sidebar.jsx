@@ -28,7 +28,7 @@ const Sidebar = () => {
       const data = await response.json();
   
       const today = new Date().toISOString().slice(5, 10); // Get month and day
-      const persons = data.data.users.filter((person) => person.DogumTarihi.slice(5, 10) === today);
+      const persons = data?.data?.users?.filter((person) => person.DogumTarihi.slice(5, 10) === today);
 
       // Set default image if profile picture is missing
       const updatedPersons = persons.map((person) => ({
